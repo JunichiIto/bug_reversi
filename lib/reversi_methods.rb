@@ -2,9 +2,9 @@
 
 require_relative './position'
 
-WHITE_STONE = 1
-BLACK_STONE = 2
-BLANK_CELL = 0
+WHITE_STONE = 'W'
+BLACK_STONE = 'B'
+BLANK_CELL = '-'
 
 def output(board)
   puts "  #{Position::COL.join(' ')}"

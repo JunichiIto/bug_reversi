@@ -7,7 +7,7 @@ def build_board(datas)
   board = Array.new(8) { Array.new(8, BLANK_CELL) }
   datas.split("\n").each.with_index do |row, i|
     row.chars.each.with_index do |cell, j|
-      board[i][j] = cell.to_i
+      board[i][j] = cell
     end
   end
   board
@@ -15,14 +15,14 @@ end
 
 def initial_board
   build_board(<<~BOARD)
-    00000000
-    00000000
-    00000000
-    00012000
-    00021000
-    00000000
-    00000000
-    00000000
+    --------
+    --------
+    --------
+    ---WB---
+    ---BW---
+    --------
+    --------
+    --------
   BOARD
 end
 
@@ -45,38 +45,38 @@ class TestReversi < Minitest::Test
     board = initial_board
     assert put_stone!(board, 'e6', BLACK_STONE)
     assert_equal build_board(<<~BOARD), board
-      00000000
-      00000000
-      00000000
-      00012000
-      00022000
-      00002000
-      00000000
-      00000000
+      --------
+      --------
+      --------
+      ---WB---
+      ---BB---
+      ----B---
+      --------
+      --------
     BOARD
     assert put_stone!(board, 'f4', WHITE_STONE)
     assert_equal build_board(<<~BOARD), board
-      00000000
-      00000000
-      00000000
-      00011100
-      00022000
-      00002000
-      00000000
-      00000000
+      --------
+      --------
+      --------
+      ---WWW--
+      ---BB---
+      ----B---
+      --------
+      --------
     BOARD
   end
 
   def test_cannot_put_stone
     initial_data = <<~BOARD
-      10111100
-      10211100
-      12111110
-      11211100
-      12222200
-      00200000
-      00200000
-      00200000
+      W-WWWW--
+      W-BWWW--
+      WBWWWWW-
+      WWBWWW--
+      WBBBBB--
+      --B-----
+      --B-----
+      --B-----
     BOARD
     board = build_board(initial_data)
     refute put_stone!(board, 'b1', BLACK_STONE)
@@ -85,25 +85,25 @@ class TestReversi < Minitest::Test
 
   def test_turn
     board = build_board(<<~BOARD)
-      00000000
-      00020000
-      00120000
-      00122000
-      00111000
-      00000000
-      00000000
-      00000000
+      --------
+      ---B----
+      --WB----
+      --WBB---
+      --WWW---
+      --------
+      --------
+      --------
     BOARD
     assert put_stone!(board, 'b4', BLACK_STONE)
     assert_equal build_board(<<~BOARD), board
-      00000000
-      00020000
-      00220000
-      02222000
-      00111000
-      00000000
-      00000000
-      00000000
+      --------
+      ---B----
+      --BB----
+      -BBBB---
+      --WWW---
+      --------
+      --------
+      --------
     BOARD
   end
 
@@ -113,60 +113,60 @@ class TestReversi < Minitest::Test
 
   def test_finished_of_full_board
     assert finished?(build_board(<<~BOARD)) # 全て埋まった盤面
-      11111111
-      12211212
-      12222122
-      12122222
-      12112222
-      12111222
-      11111122
-      12222222
+      WWWWWWWW
+      WBBWWBWB
+      WBBBBWBB
+      WBWBBBBB
+      WBWWBBBB
+      WBWWWBBB
+      WWWWWWBB
+      WBBBBBBB
     BOARD
   end
 
   def test_finished_of_quickest_win_board
     assert finished?(build_board(<<~BOARD)) # 白最短勝利
-      00000000
-      00010000
-      00011000
-      01111100
-      00011100
-      00011100
-      00000000
-      00000000
+      --------
+      ---W----
+      ---WW---
+      -WWWWW--
+      ---WWW--
+      ---WWW--
+      --------
+      --------
     BOARD
     assert finished?(build_board(<<~BOARD)) # 黒最短勝利
-      00000000
-      00000000
-      00002000
-      00022200
-      00222220
-      00022200
-      00002000
-      00000000
+      --------
+      --------
+      ----B---
+      ---BBB--
+      --BBBBB-
+      ---BBB--
+      ----B---
+      --------
     BOARD
   end
 
   def test_finished_of_player_skip_board
     refute finished?(build_board(<<~BOARD)) # 白配置可・黒配置不可
-      11111112
-      12211212
-      12222122
-      12122220
-      12112222
-      12111222
-      11112122
-      12222222
+      WWWWWWWB
+      WBBWWBWB
+      WBBBBWBB
+      WBWBBBB-
+      WBWWBBBB
+      WBWWWBBB
+      WWWWBWBB
+      WBBBBBBB
     BOARD
     refute finished?(build_board(<<~BOARD)) # 白配置不可・黒配置可
-      11111111
-      12211212
-      12222122
-      12122222
-      12112222
-      12111222
-      22220122
-      12222222
+      WWWWWWWW
+      WBBWWBWB
+      WBBBBWBB
+      WBWBBBBB
+      WBWWBBBB
+      WBWWWBBB
+      BBBB-WBB
+      WBBBBBBB
     BOARD
   end
 end
